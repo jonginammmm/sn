@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinnamon Girl Animation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            font-family: sans-serif;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        #playBtn {
+            position: absolute;
+            top: 30px;
+            z-index: 10;
+            padding: 12px 24px;
+            font-size: 15px;
+            font-weight: bold;
+            color: #ffb6c1;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #ffb6c1;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 182, 193, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        #playBtn:active {
+            transform: scale(0.95);
+            background: #ffb6c1;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+
+    <button id="playBtn">Musiqani yoqish 🎵</button>
+    <canvas id="canvas"></canvas>
+
+    <!-- Siz yuborgan Cinnamon Girl audio fayli -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="cinnamon_girl.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const audio = document.getElementById('bgMusic');
+        const playBtn = document.getElementById('playBtn');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        playBtn.addEventListener('click', () => {
+            audio.play().then(() => {
+                playBtn.style.display = 'none';
+            }).catch(err => {
+                alert("Musiqa fayli topilmadi! Yuklab olingan 'Cinnamon Girl' musiqangiz nomini 'cinnamon_girl.mp3' qilib fayl yoniga joylashtiring.");
+            });
+        });
+
+        let a = 0;
+        let h = 0;
+
+        function draw() {
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            for (let i = 0; i < 120; i++) {
+                const hue = (h * 360) % 360;
+                ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+                ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
+                ctx.lineWidth = 1.5;
+
+                const x = Math.sin(a + i) * 180;
+                const y = Math.cos(a + i * 2) * 180;
+
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(centerX + x, centerY + y);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.arc(centerX + x, centerY + y, 7.5, 0, Math.PI * 2);
+                ctx.fill();
+
+                h += 0.00005;
+            }
+
+            a += 0.015;
+
+            requestAnimationFrame(draw);
+        }
+
+        draw();
+    </script>
+</body>
+</html>
